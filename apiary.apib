@@ -53,8 +53,7 @@ Invalid user email or password.
                 "email": "john@cleveranalytics.com",
                 "status": "ENABLED",
                 "preferences": {
-                    "language": "en",
-                    "lastActiveProject": "/rest/projects/ncesksvg7rjeri7v"                
+                    "language": "en"            
                 },
                 "onboarding": {
                     "introShown": [
@@ -253,8 +252,7 @@ The resource has two type of responses:
                 "email": "john@cleveranalytics.com",
                 "status": "ENABLED",
                 "preferences": {
-                    "language": "en",
-                    "lastActiveProject": "/rest/projects/ncesksvg7rjeri7v"                
+                    "language": "en"              
                 },
                 "onboarding": {
                     "introShown": [
@@ -303,8 +301,7 @@ Account for user identified by his/her Bearer token. Resource is the same as the
                 "email": "john@cleveranalytics.com",
                 "status": "ENABLED",
                 "preferences": {
-                    "language": "en",
-                    "lastActiveProject": "/rest/projects/ncesksvg7rjeri7v"                
+                    "language": "en"               
                 },
                 "onboarding": {
                     "introShown": [
@@ -522,8 +519,7 @@ Get general information as user details, settings, projects and preferences.
                     "email": "john@cleveranalytics.com",
                     "status": "ENABLED",
                     "preferences": {
-                        "language": "en",
-                        "lastActiveProject": "/rest/projects/ncesksvg7rjeri7v"                
+                        "language": "en"
                     },
                     "onboarding": {
                         "introShown": [
@@ -933,16 +929,38 @@ Restricted to *ADMIN* project role.
     
             Authorization: Bearer {{accessToken}}
 
+    + Body
+
+            {
+                "accountId": "O3kTMX6pCTRBSIMRej4q0",
+                "role": "ADMIN",
+                "status": "ENABLED"
+            }
+
 + Response 201 (application/json)
 
         {
+            "id": "jfjf0ak3kflam",
             "accountId": "O3kTMX6pCTRBSIMRej4q0",
-            "role": "EDITOR"
+            "role": "ADMIN",
             "status": "ENABLED",
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "/rest/projects/ncesksvg7rjeri7v/members/jfjf0ak3kflam"
+                },
+                {
+                    "rel": "project",
+                    "href": "/rest/projects/ncesksvg7rjeri7v"
+                },
+                {
+                    "rel": "account",
+                    "href": "/rest/accounts/O3kTMX6pCTRBSIMRej4q0"
+                }
+            ]
         }
 
 ## Membership
-
 ### Get Membership by AccountId [GET /rest/projects/{projectId}/members{?accountId,expand}]
 Get membership for given project and accountId
 
@@ -1073,7 +1091,7 @@ Restricted to *ADMIN* project role.
         }
         
 ### Disable Membership [DELETE /rest/projects/{projectId}/members/{id}]
-Disables membership of user in project
+Deletes membership of user in project. The user will be not able to access the project anymore.
 
 #### Response statuses
 * 204 - No content
@@ -1542,98 +1560,6 @@ The dataset's objects are indexed during dataset pull job. It means that if the 
                     "number": 0
                 }
             }
-            
-### Geographic Search [GET /rest/projects/{projectId}/geosearch{?query,size,page}]
-
-Full text search for a location identified by the `query` parameter.
-
-+ Parameters
-    + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + query: `Birmingham` (string) - Query search phrase
-    + size = `20` (optional, number)
-    + page = `0` (optional, number)
-
-+ Request (application/json)
-
-    + Headers
-
-            Authorization: Bearer {{accessToken}}
-
-+ Response 200 (application/json)
-
-    + Body
-
-            {
-                "content": [
-                    {
-                        "title": "Birmingham",
-                        "subtitle": "West Midlands Combined Authority",
-                        "position": {
-                            "lat": 52.4949,
-                            "log": -1.852658
-                        },
-                        "highlight": {
-                            "title": "<em>Birmingham</em>",
-                            "subtitle": "West Midlands Combined Authority"
-                        },
-                        "boundingBox": {
-                            "upperLeft": 0
-                            "lowerRight": 0
-                        },
-                        "placeType": "city"
-                    },
-                    {
-                        "title": "Birmingham New Road",
-                        "subtitle": "Dudley",
-                        "position": {
-                            "lat": 52.533226,
-                            "long": -2.08706
-                        },
-                        "highlight": {
-                            "title": "<em>Birmingham</em> New Road",
-                            "subtitle": "Dudley",
-                        },
-                        "boundingBox": {
-                            "upperLeft": 0
-                            "lowerRight": 0
-                        },
-                        "placeType": "street"
-                    },
-                    {
-                        "title": "New Frankley in Birmingham",
-                        "subtitle": "Birmingham",
-                        "position": {
-                            "lat": 52.405514,
-                            "long": -2.016126
-                        },
-                        "highlight": {
-                            "title": "New Frankley in <em>Birmingham</em>",
-                            "subtitle": "<em>Birmingham</em>",
-                        },
-                        "boundingBox": {
-                            "upperLeft": 0
-                            "lowerRight": 0
-                        },
-                        "placeType": "place"
-                    }
-                ],
-                "links": [
-                    {
-                        "rel": "self",
-                        "href": "/rest/projects/vb2b3d8v91jao331/geosearch?query=Birmingham"
-                    },
-                    {
-                        "rel": "next",
-                        "href": "/rest/projects/vb2b3d8v91jao331/geosearch?query=Birmingham&size=10&page=1"
-                    }
-                ],
-                "page": {
-                    "size": 10,
-                    "totalElements": 1,
-                    "totalPages": 1,
-                    "number": 0
-                }
-            }
 
 # Group Data Warehouse Service
 ## DWH Query [/rest/projects/{projectId}/dwh/query{?size,page}]
@@ -1701,6 +1627,8 @@ These functions can be used for comparing property with a value:
 * isNull
 * isNotNull
 * inAttribute
+* notInAttribute
+* distanceLte
 
 Boolean operators for building advanced conditions:
 * and - requires at least two arguments (subconditions)
@@ -1904,7 +1832,7 @@ The resource accept standard DWH Query and shows the corresponding SQL statement
           "turnover_metric", 
           count(*) over () as "total_rows_count"
         from (
-          with "turnover_metric" as (
+          with recursive "turnover_metric" as (
             select 
               "baskets"."value_name" as "_split_property", 
               "baskets"."value_cat" as "sort_value_cat_0", 
@@ -1919,8 +1847,8 @@ The resource accept standard DWH Query and shows the corresponding SQL statement
               and "baskets"."amount" <= 898.17
             )
             group by 
-              "baskets"."value_cat", 
-              "baskets"."value_name"
+              1, 
+              2
             order by 
               "_split_property" asc, 
               "sort_value_cat_0" asc
@@ -1934,7 +1862,7 @@ The resource accept standard DWH Query and shows the corresponding SQL statement
             1, 
             2, 
             "turnover_metric"
-          order by "sort_value_cat_0" asc
+          order by "sort_value_cat_0" asc nulls first
         ) as "inner"
         limit 200
 
@@ -2205,13 +2133,7 @@ Returns:
                                             "type": "property",
                                             "value": "baskets.basket_id"
                                         }
-                                    ],
-                                    "options": {
-                                        "aggregateBy": [],
-                                        "withoutFilters": [],
-                                        "acceptFilters": [],
-                                        "filterBy": []
-                                    }
+                                    ]
                                 },
                                 {
                                     "type": "function_count",
@@ -2220,13 +2142,7 @@ Returns:
                                             "type": "property",
                                             "value": "clients.client_id"
                                         }
-                                    ],
-                                    "options": {
-                                        "aggregateBy": [],
-                                        "withoutFilters": [],
-                                        "acceptFilters": [],
-                                        "filterBy": []
-                                    }
+                                    ]
                                 }
                             ]
                         }
@@ -2527,6 +2443,115 @@ By default, the values are ordered ascending by the property value. Optionaly th
                 "number": 0
             }
         }    
+        
+## DWH Overlaps [/rest/projects/{projectId}/dwh/overlaps]
+### Overlaps [POST] 
+Computes set operations between two objects for given metric on selected granularity level.
+The result is metric value for the areas.
+
+Supported operations
+* *subtract* - metric value for area exclusively covered by object (area covered by objectA subtract areas covered by objectB)
+* *intersect* - metric value for area covered by both objects
+
++ Parameters
+    + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
+
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Bearer {{accessToken}}
+
+    + Body
+        
+            {
+                "objects": [
+                    {
+                        "property": "shops.shop_id",
+                        "value": "2",
+                        "operator": "eq"
+                    },
+                    {
+                        "property": "shops.shop_id",
+                        "value": "7",
+                        "operator": "eq"
+                    }
+                ],
+                "granularity": "ward",
+                "query": {
+                    "properties": [
+                        {
+                            "id": "turnover_metric",
+                            "type": "function_sum",
+                            "content": [
+                                {
+                                    "type": "property",
+                                    "value": "baskets.amount"
+                                }
+                            ]
+                        }
+                    ],
+                    "filterBy": [
+                        {
+                            "property": "baskets.date_iso",
+                            "operator": "gte",
+                            "value": "2017-09-24"
+                        },
+                        {
+                            "property": "baskets.date_iso",
+                            "operator": "lte",
+                            "value": "2017-09-30"
+                        },
+                        {
+                            "property": "baskets.amount",
+                            "operator": "gte",
+                            "value": 5
+                        },
+                        {
+                            "property": "baskets.amount",
+                            "operator": "lte",
+                            "value": 899.98
+                        }
+                    ]
+                }
+            }
+
+
++ Response 200 (application/json)
+
+            {
+                "content": [
+                    {
+                        "propertyId": "turnover_metric",
+                        "results": [
+                            {
+                                "operator": "subtract",
+                                "objects": [
+                                    "2",
+                                    "7"
+                                ],
+                                "value": 6127.59
+                            },
+                            {
+                                "operator": "subtract",
+                                "objects": [
+                                    "7",
+                                    "2"
+                                ],
+                                "value": 11279.5
+                            },
+                            {
+                                "operator": "intersect",
+                                "objects": [
+                                    "2",
+                                    "7"
+                                ],
+                                "value": 30576.88
+                            }
+                        ]
+                    }
+                ]
+            }      
 
 
 ## DWH Upload [/rest/projects/{projectId}/dwh/data/uploads]
@@ -3421,7 +3446,7 @@ Returns Dashboard identified by given *id*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + id: `naln8j15edsjq4d2` (string) - The id of a dashboard
+    + id: `jsivtsvfuh6ucnrm` (string) - The id of a dashboard
 
 + Request
 
@@ -3433,32 +3458,32 @@ Returns Dashboard identified by given *id*.
 + Response 200 (application/json)
 
         {
-            "id": "naln8j15edsjq4d2",
+            "id": "jsivtsvfuh6ucnrm",
             "name": "catchment_area_dashboard",
             "type": "dashboard",
             "content": {
                 "indicators": [
                     {
-                        "indicator": "/rest/projects/vb2b3d8v91jao331/md/indicators?name=turnover_indicator",
-                        "indicatorDrill": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills?name=turnover_indicator_drill"
+                        "indicator": "/rest/projects/$projectId/md/indicators?name=turnover_indicator",
+                        "indicatorDrill": "/rest/projects/$projectId/md/indicatorDrills?name=turnover_indicator_drill"
                     },
                     {
-                        "indicator": "/rest/projects/vb2b3d8v91jao331/md/indicators?name=customers_indicator",
-                        "indicatorDrill": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills?name=customers_indicator_drill"
+                        "indicator": "/rest/projects/$projectId/md/indicators?name=customers_indicator",
+                        "indicatorDrill": "/rest/projects/$projectId/md/indicatorDrills?name=customers_indicator_drill"
                     },
                     {
-                        "indicator": "/rest/projects/vb2b3d8v91jao331/md/indicators?name=purchases_customer_indicator",
-                        "indicatorDrill": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills?name=purchases_customer_indicator_drill"
+                        "indicator": "/rest/projects/$projectId/md/indicators?name=purchases_customer_indicator",
+                        "indicatorDrill": "/rest/projects/$projectId/md/indicatorDrills?name=purchases_customer_indicator_drill"
                     }
                 ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:30Z"
+                "createdAt": "2018-04-05T15:02:36Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/dashboards/naln8j15edsjq4d2"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/dashboards/jsivtsvfuh6ucnrm"
                 }
             ]
         }
@@ -3486,32 +3511,32 @@ Returns Dashboard identified by given *name*.
 + Response 200 (application/json)
 
         {
-            "id": "naln8j15edsjq4d2",
+            "id": "jsivtsvfuh6ucnrm",
             "name": "catchment_area_dashboard",
             "type": "dashboard",
             "content": {
                 "indicators": [
                     {
-                        "indicator": "/rest/projects/vb2b3d8v91jao331/md/indicators?name=turnover_indicator",
-                        "indicatorDrill": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills?name=turnover_indicator_drill"
+                        "indicator": "/rest/projects/$projectId/md/indicators?name=turnover_indicator",
+                        "indicatorDrill": "/rest/projects/$projectId/md/indicatorDrills?name=turnover_indicator_drill"
                     },
                     {
-                        "indicator": "/rest/projects/vb2b3d8v91jao331/md/indicators?name=customers_indicator",
-                        "indicatorDrill": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills?name=customers_indicator_drill"
+                        "indicator": "/rest/projects/$projectId/md/indicators?name=customers_indicator",
+                        "indicatorDrill": "/rest/projects/$projectId/md/indicatorDrills?name=customers_indicator_drill"
                     },
                     {
-                        "indicator": "/rest/projects/vb2b3d8v91jao331/md/indicators?name=purchases_customer_indicator",
-                        "indicatorDrill": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills?name=purchases_customer_indicator_drill"
+                        "indicator": "/rest/projects/$projectId/md/indicators?name=purchases_customer_indicator",
+                        "indicatorDrill": "/rest/projects/$projectId/md/indicatorDrills?name=purchases_customer_indicator_drill"
                     }
                 ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:30Z"
+                "createdAt": "2018-04-05T15:02:36Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/dashboards/naln8j15edsjq4d2"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/dashboards/jsivtsvfuh6ucnrm"
                 }
             ]
         }
@@ -3989,7 +4014,7 @@ Returns Dataset with given *id*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + id: `n2ma1svl5o5oihrc` (string) - Id of the dataset
+    + id: `l7n1rmmjsgrdnthq` (string) - Id of the dataset
 
 + Request
 
@@ -4001,7 +4026,7 @@ Returns Dataset with given *id*.
 + Response 200 (application/json)
 
         {
-            "id": "n2ma1svl5o5oihrc",
+            "id": "l7n1rmmjsgrdnthq",
             "name": "baskets",
             "type": "dataset",
             "title": "Baskets",
@@ -4010,8 +4035,7 @@ Returns Dataset with given *id*.
                 "featureTitle": {
                     "type": "property",
                     "value": "basket_id"
-                },
-                "featureAttributes": []
+                }
             },
             "ref": {
                 "subtype": "basic",
@@ -4024,11 +4048,11 @@ Returns Dataset with given *id*.
                         "name": "date_iso",
                         "title": "Date ISO",
                         "column": "date_iso",
-                        "type": "string",
+                        "type": "date",
                         "foreignKey": "dim_dates"
                     },
                     {
-                        "filterable": true,
+                        "filterable": false,
                         "name": "shop_id",
                         "title": "Shop ID",
                         "column": "shop_id",
@@ -4036,7 +4060,7 @@ Returns Dataset with given *id*.
                         "foreignKey": "shops"
                     },
                     {
-                        "filterable": true,
+                        "filterable": false,
                         "name": "client_id",
                         "title": "Client ID",
                         "column": "client_id",
@@ -4048,7 +4072,7 @@ Returns Dataset with given *id*.
                         "name": "amount",
                         "title": "Purchase value",
                         "column": "amount",
-                        "type": "double"
+                        "type": "decimal(19,6)"
                     },
                     {
                         "filterable": true,
@@ -4069,7 +4093,7 @@ Returns Dataset with given *id*.
                         "name": "action_turnover",
                         "title": "Action turnover",
                         "column": "action_turnover",
-                        "type": "double"
+                        "type": "decimal(19,6)"
                     },
                     {
                         "filterable": true,
@@ -4079,7 +4103,7 @@ Returns Dataset with given *id*.
                         "type": "string"
                     },
                     {
-                        "filterable": true,
+                        "filterable": false,
                         "name": "value_cat",
                         "title": "Item value category",
                         "column": "value_cat",
@@ -4102,12 +4126,12 @@ Returns Dataset with given *id*.
                 ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:30:05Z"
+                "createdAt": "2018-04-05T15:02:49Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/datasets/n2ma1svl5o5oihrc"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/datasets/l7n1rmmjsgrdnthq"
                 }
             ]
         }
@@ -4134,7 +4158,7 @@ Returns Dataset with given *name*.
 + Response 200 (application/json)
 
         {
-            "id": "n2ma1svl5o5oihrc",
+            "id": "l7n1rmmjsgrdnthq",
             "name": "baskets",
             "type": "dataset",
             "title": "Baskets",
@@ -4143,8 +4167,7 @@ Returns Dataset with given *name*.
                 "featureTitle": {
                     "type": "property",
                     "value": "basket_id"
-                },
-                "featureAttributes": []
+                }
             },
             "ref": {
                 "subtype": "basic",
@@ -4157,11 +4180,11 @@ Returns Dataset with given *name*.
                         "name": "date_iso",
                         "title": "Date ISO",
                         "column": "date_iso",
-                        "type": "string",
+                        "type": "date",
                         "foreignKey": "dim_dates"
                     },
                     {
-                        "filterable": true,
+                        "filterable": false,
                         "name": "shop_id",
                         "title": "Shop ID",
                         "column": "shop_id",
@@ -4169,7 +4192,7 @@ Returns Dataset with given *name*.
                         "foreignKey": "shops"
                     },
                     {
-                        "filterable": true,
+                        "filterable": false,
                         "name": "client_id",
                         "title": "Client ID",
                         "column": "client_id",
@@ -4181,7 +4204,7 @@ Returns Dataset with given *name*.
                         "name": "amount",
                         "title": "Purchase value",
                         "column": "amount",
-                        "type": "double"
+                        "type": "decimal(19,6)"
                     },
                     {
                         "filterable": true,
@@ -4202,7 +4225,7 @@ Returns Dataset with given *name*.
                         "name": "action_turnover",
                         "title": "Action turnover",
                         "column": "action_turnover",
-                        "type": "double"
+                        "type": "decimal(19,6)"
                     },
                     {
                         "filterable": true,
@@ -4212,7 +4235,7 @@ Returns Dataset with given *name*.
                         "type": "string"
                     },
                     {
-                        "filterable": true,
+                        "filterable": false,
                         "name": "value_cat",
                         "title": "Item value category",
                         "column": "value_cat",
@@ -4235,12 +4258,12 @@ Returns Dataset with given *name*.
                 ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:30:05Z"
+                "createdAt": "2018-04-05T15:02:49Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/datasets/n2ma1svl5o5oihrc"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/datasets/l7n1rmmjsgrdnthq"
                 }
             ]
         }
@@ -4901,7 +4924,7 @@ Returns Export with given *id*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + id: `n2ma1svl5o5oihrc` (string) - Id of the export
+    + id: `n8818pnnudtuigah` (string) - Id of the export
 
 + Request
 
@@ -4913,25 +4936,26 @@ Returns Export with given *id*.
 + Response 200 (application/json)
 
         {
-            "id": "j49psu9af5ijhbnk",
-            "name": "retail_solution_demo_export_list_of_areas",
+            "id": "n8818pnnudtuigah",
+            "name": "transaction_ids_export",
             "type": "export",
-            "title": "List of Areas",
-            "description": "Returns postcodes, lower super output areas, middle super output areas and value of indicators available in the view into CSV file.",
+            "title": "List of Transaction IDs",
+            "description": "Returns transactions ID, postcodes, lower super output areas, middle super output areas and value of indicators available in the view into a CSV file.",
             "content": {
                 "properties": [
                     "codepoint_plg.msoa11nm",
                     "codepoint_plg.lsoa11nm",
-                    "codepoint_plg.postcode"
+                    "codepoint_plg.postcode",
+                    "baskets.basket_id"
                 ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:32Z"
+                "createdAt": "2018-04-05T15:02:23Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/exports/j49psu9af5ijhbnk"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/exports/n8818pnnudtuigah"
                 }
             ]
         }
@@ -4946,7 +4970,7 @@ Returns Export with given *name*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + name: `retail_solution_demo_export_list_of_areas` (string) - Name the export object
+    + name: `transaction_ids_export` (string) - Name the export object
 
 + Request
 
@@ -4958,25 +4982,26 @@ Returns Export with given *name*.
 + Response 200 (application/json)
 
         {
-            "id": "j49psu9af5ijhbnk",
-            "name": "retail_solution_demo_export_list_of_areas",
+            "id": "n8818pnnudtuigah",
+            "name": "transaction_ids_export",
             "type": "export",
-            "title": "List of Areas",
-            "description": "Returns postcodes, lower super output areas, middle super output areas and value of indicators available in the view into CSV file.",
+            "title": "List of Transaction IDs",
+            "description": "Returns transactions ID, postcodes, lower super output areas, middle super output areas and value of indicators available in the view into a CSV file.",
             "content": {
                 "properties": [
                     "codepoint_plg.msoa11nm",
                     "codepoint_plg.lsoa11nm",
-                    "codepoint_plg.postcode"
+                    "codepoint_plg.postcode",
+                    "baskets.basket_id"
                 ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:32Z"
+                "createdAt": "2018-04-05T15:02:23Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/exports/j49psu9af5ijhbnk"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/exports/n8818pnnudtuigah"
                 }
             ]
         }
@@ -5174,7 +5199,7 @@ Returns Indicator with given *id*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + id: `n2ma1svl5o5oihrc` (string) - Id of the indicator
+    + id: `fgjdsg3u6gdg0ka7` (string) - Id of the indicator
 
 + Request
 
@@ -5186,13 +5211,13 @@ Returns Indicator with given *id*.
 + Response 200 (application/json)
 
         {
-            "id": "ipadjtohq10cgq4r",
+            "id": "fgjdsg3u6gdg0ka7",
             "name": "average_purchase_indicator",
             "type": "indicator",
             "title": "Average Purchase value",
             "description": "Average purchase value indicates the average monetary size of purchases or orders made offline or online.",
             "content": {
-                "metric": "/rest/projects/vb2b3d8v91jao331/md/metrics?name=average_purchase_metric",
+                "metric": "/rest/projects/$projectId/md/metrics?name=average_purchase_metric",
                 "scale": "standard",
                 "distribution": "uniform",
                 "format": {
@@ -5202,12 +5227,12 @@ Returns Indicator with given *id*.
                 }
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:38Z"
+                "createdAt": "2018-04-05T15:02:25Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/indicators/ipadjtohq10cgq4r"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/indicators/fgjdsg3u6gdg0ka7"
                 }
             ]
         }
@@ -5233,13 +5258,13 @@ Returns Indicator with given *name*.
 + Response 200 (application/json)
 
         {
-            "id": "ipadjtohq10cgq4r",
+            "id": "fgjdsg3u6gdg0ka7",
             "name": "average_purchase_indicator",
             "type": "indicator",
             "title": "Average Purchase value",
             "description": "Average purchase value indicates the average monetary size of purchases or orders made offline or online.",
             "content": {
-                "metric": "/rest/projects/vb2b3d8v91jao331/md/metrics?name=average_purchase_metric",
+                "metric": "/rest/projects/$projectId/md/metrics?name=average_purchase_metric",
                 "scale": "standard",
                 "distribution": "uniform",
                 "format": {
@@ -5249,12 +5274,12 @@ Returns Indicator with given *name*.
                 }
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:38Z"
+                "createdAt": "2018-04-05T15:02:25Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/indicators/ipadjtohq10cgq4r"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/indicators/fgjdsg3u6gdg0ka7"
                 }
             ]
         }
@@ -5562,28 +5587,54 @@ Restricted to *EDITOR* project role that has the permission to update metadata o
                 "content": {
                     "blocks": [
                         {
-                            "type": "histogram",
-                            "description": "Progress of indicator Turnover value over selected period of time."
+                            "type": "distribution"
                         },
                         {
                             "type": "ranking",
-                            "size": 10,
-                            "description": "Rank of areas according to Turnover value."
+                            "size": 10
                         },
                         {
-                            "type": "trend",
-                            "description": "Distribution of Turnover in all areas of selected granularity."
+                            "type": "timeSeries"
                         },
                         {
-                            "type": "barchart",
-                            "title": "Turnover by channel",
+                            "type": "categories",
+                            "title": "Total Turnover value by channel",
+                            "description": "Total Turnover value by channel",
                             "splitProperty": "baskets.on_off_name",
                             "orderBy": {
                                 "property": "baskets.on_off_name",
-                                "direction": "asc",
-                                "sort": "asc"
-                            },
-                            "description": "Turnover by channel."
+                                "direction": "asc"
+                            }
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by delivery",
+                            "description": "Total Turnover value by delivery type",
+                            "splitProperty": "baskets.courier",
+                            "orderBy": {
+                                "property": "baskets.courier",
+                                "direction": "asc"
+                            }
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by day of the week",
+                            "description": "Total Turnover value by day of the week",
+                            "splitProperty": "dim_dates_day_of_week.day_of_week_name_en",
+                            "orderBy": {
+                                "property": "dim_dates_day_of_week.day_of_week_id",
+                                "direction": "asc"
+                            }
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by value of Purchase",
+                            "description": "Total Turnover value by value of Purchase",
+                            "splitProperty": "baskets.value_name",
+                            "orderBy": {
+                                "property": "baskets.value_cat",
+                                "direction": "asc"
+                            }
                         }
                     ]
                 }
@@ -5592,44 +5643,70 @@ Restricted to *EDITOR* project role that has the permission to update metadata o
 + Response 200 (application/json)
 
             {
-                "id": "oq0d6btmb7istcc4",
+                "id": "gatnherp27gjp0pl",
                 "name": "turnover_indicator_drill",
                 "type": "indicatorDrill",
                 "content": {
                     "blocks": [
                         {
-                            "type": "histogram",
-                            "description": "Progress of indicator Turnover value over selected period of time."
+                            "type": "distribution"
                         },
                         {
                             "type": "ranking",
-                            "size": 10,
-                            "description": "Rank of areas according to Turnover value."
+                            "size": 10
                         },
                         {
-                            "type": "trend",
-                            "description": "Distribution of Turnover in all areas of selected granularity."
+                            "type": "timeSeries"
                         },
                         {
-                            "type": "barchart",
-                            "title": "Turnover by channel",
+                            "type": "categories",
+                            "title": "Total Turnover value by channel",
+                            "description": "Total Turnover value by channel",
                             "splitProperty": "baskets.on_off_name",
                             "orderBy": {
                                 "property": "baskets.on_off_name",
-                                "direction": "asc",
-                                "sort": "asc"
-                            },
-                            "description": "Turnover by channel."
+                                "direction": "asc"
+                            }
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by delivery",
+                            "description": "Total Turnover value by delivery type",
+                            "splitProperty": "baskets.courier",
+                            "orderBy": {
+                                "property": "baskets.courier",
+                                "direction": "asc"
+                            }
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by day of the week",
+                            "description": "Total Turnover value by day of the week",
+                            "splitProperty": "dim_dates_day_of_week.day_of_week_name_en",
+                            "orderBy": {
+                                "property": "dim_dates_day_of_week.day_of_week_id",
+                                "direction": "asc"
+                            }
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by value of Purchase",
+                            "description": "Total Turnover value by value of Purchase",
+                            "splitProperty": "baskets.value_name",
+                            "orderBy": {
+                                "property": "baskets.value_cat",
+                                "direction": "asc"
+                            }
                         }
                     ]
                 },
                 "accessInfo": {
-                    "createdAt": "2017-10-18T12:04:52Z"
+                    "createdAt": "2018-04-05T15:02:27Z"
                 },
                 "links": [
                     {
                         "rel": "self",
-                        "href": "/rest/projects/ld3y3gtm7jt6z1fx/md/indicatorDrills/oq0d6btmb7istcc4"
+                        "href": "/rest/projects/kt3hz932v53vabh8/md/indicatorDrills/gatnherp27gjp0pl"
                     }
                 ]
             }
@@ -5643,7 +5720,7 @@ Returns Indicator Drill with given *id*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + id: `vj1q1d41i96skcjv` (string) - Id of the indicator drill
+    + id: `nmhelks1t913n43a` (string) - Id of the indicator drill
 
 + Request
 
@@ -5655,44 +5732,40 @@ Returns Indicator Drill with given *id*.
 + Response 200 (application/json)
 
         {
-            "id": "vj1q1d41i96skcjv",
+            "id": "nmhelks1t913n43a",
             "name": "average_purchase_indicator_drill",
             "type": "indicatorDrill",
             "content": {
                 "blocks": [
                     {
-                        "type": "histogram",
-                        "description": "Progress of indicator value over selected period of time"
+                        "type": "distribution"
                     },
                     {
                         "type": "ranking",
-                        "size": 10,
-                        "description": "Ranking of related features"
+                        "size": 10
                     },
                     {
-                        "type": "trend",
-                        "description": "Distribution of selected indicator in all areas of selected granularity"
+                        "type": "timeSeries"
                     },
                     {
-                        "type": "barchart",
+                        "type": "categories",
                         "title": "Average Purchase value by channel",
+                        "description": "Average Purchase value by channel",
                         "splitProperty": "baskets.on_off_name",
                         "orderBy": {
                             "property": "baskets.on_off_name",
-                            "direction": "asc",
-                            "sort": "asc"
-                        },
-                        "description": "Average Purchase value by channel"
+                            "direction": "desc"
+                        }
                     }
                 ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:33Z"
+                "createdAt": "2018-04-05T15:02:29Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills/vj1q1d41i96skcjv"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/indicatorDrills/nmhelks1t913n43a"
                 }
             ]
         }
@@ -5718,44 +5791,40 @@ Returns Indicator Drill with given *name*.
 + Response 200 (application/json)
 
         {
-            "id": "vj1q1d41i96skcjv",
+            "id": "nmhelks1t913n43a",
             "name": "average_purchase_indicator_drill",
             "type": "indicatorDrill",
             "content": {
                 "blocks": [
                     {
-                        "type": "histogram",
-                        "description": "Progress of indicator value over selected period of time"
+                        "type": "distribution"
                     },
                     {
                         "type": "ranking",
-                        "size": 10,
-                        "description": "Ranking of related features"
+                        "size": 10
                     },
                     {
-                        "type": "trend",
-                        "description": "Distribution of selected indicator in all areas of selected granularity"
+                        "type": "timeSeries"
                     },
                     {
-                        "type": "barchart",
+                        "type": "categories",
                         "title": "Average Purchase value by channel",
+                        "description": "Average Purchase value by channel",
                         "splitProperty": "baskets.on_off_name",
                         "orderBy": {
                             "property": "baskets.on_off_name",
-                            "direction": "asc",
-                            "sort": "asc"
-                        },
-                        "description": "Average Purchase value by channel"
+                            "direction": "desc"
+                        }
                     }
                 ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:33Z"
+                "createdAt": "2018-04-05T15:02:29Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills/vj1q1d41i96skcjv"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/indicatorDrills/nmhelks1t913n43a"
                 }
             ]
         }
@@ -5788,88 +5857,111 @@ Returns paged collection of all Indicator Drills in a project.
             ],
             "content": [
                 {
-                    "id": "euh1qkanhjo28690",
+                    "id": "nmhelks1t913n43a",
                     "name": "average_purchase_indicator_drill",
                     "type": "indicatorDrill",
                     "content": {
                         "blocks": [
                             {
-                                "type": "histogram",
-                                "description": "Progress of indicator value over selected period of time"
+                                "type": "distribution"
                             },
                             {
                                 "type": "ranking",
-                                "size": 10,
-                                "description": "Ranking of areas with the highest average purchases"
+                                "size": 10
                             },
                             {
-                                "type": "trend",
-                                "description": "Distribution of selected indicator in all areas of selected granularity"
+                                "type": "timeSeries"
                             },
                             {
-                                "type": "barchart",
-                                "title": "Purchases by channel",
+                                "type": "categories",
+                                "title": "Average Purchase value by channel",
+                                "description": "Average Purchase value by channel",
                                 "splitProperty": "baskets.on_off_name",
                                 "orderBy": {
                                     "property": "baskets.on_off_name",
-                                    "direction": "asc"
-                                },
-                                "description": "Average purchase by channel (Online / Offline)"
+                                    "direction": "desc"
+                                }
                             }
                         ]
                     },
                     "accessInfo": {
-                        "createdAt": "2017-10-18T12:05:38Z"
+                        "createdAt": "2018-04-05T15:02:29Z"
                     },
                     "links": [
                         {
                             "rel": "self",
-                            "href": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills/euh1qkanhjo28690"
+                            "href": "/rest/projects/kt3hz932v53vabh8/md/indicatorDrills/nmhelks1t913n43a"
                         }
                     ]
                 },
-                {
-                    "id": "oq0d6btmb7istcc4",
-                    "name": "turnover_indicator_drill",
-                    "type": "indicatorDrill",
-                    "content": {
-                        "blocks": [
-                            {
-                                "type": "histogram",
-                                "description": "Progress of indicator Turnover value over selected period of time."
-                            },
-                            {
-                                "type": "ranking",
-                                "size": 10,
-                                "description": "Rank of areas according to Turnover value."
-                            },
-                            {
-                                "type": "trend",
-                                "description": "Distribution of Turnover in all areas of selected granularity."
-                            },
-                            {
-                                "type": "barchart",
-                                "title": "Turnover by channel",
-                                "splitProperty": "baskets.on_off_name",
-                                "orderBy": {
-                                    "property": "baskets.on_off_name",
-                                    "direction": "asc",
-                                    "sort": "asc"
-                                },
-                                "description": "Turnover by channel."
-                            }
-                        ]
-                    },
-                    "accessInfo": {
-                        "createdAt": "2017-10-18T12:04:52Z"
-                    },
-                    "links": [
+            {
+                "id": "gatnherp27gjp0pl",
+                "name": "turnover_indicator_drill",
+                "type": "indicatorDrill",
+                "content": {
+                    "blocks": [
                         {
-                            "rel": "self",
-                            "href": "/rest/projects/vb2b3d8v91jao331/md/indicatorDrills/oq0d6btmb7istcc4"
+                            "type": "distribution"
+                        },
+                        {
+                            "type": "ranking",
+                            "size": 10
+                        },
+                        {
+                            "type": "timeSeries"
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by channel",
+                            "description": "Total Turnover value by channel",
+                            "splitProperty": "baskets.on_off_name",
+                            "orderBy": {
+                                "property": "baskets.on_off_name",
+                                "direction": "asc"
+                            }
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by delivery",
+                            "description": "Total Turnover value by delivery type",
+                            "splitProperty": "baskets.courier",
+                            "orderBy": {
+                                "property": "baskets.courier",
+                                "direction": "asc"
+                            }
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by day of the week",
+                            "description": "Total Turnover value by day of the week",
+                            "splitProperty": "dim_dates_day_of_week.day_of_week_name_en",
+                            "orderBy": {
+                                "property": "dim_dates_day_of_week.day_of_week_id",
+                                "direction": "asc"
+                            }
+                        },
+                        {
+                            "type": "categories",
+                            "title": "Total Turnover value by value of Purchase",
+                            "description": "Total Turnover value by value of Purchase",
+                            "splitProperty": "baskets.value_name",
+                            "orderBy": {
+                                "property": "baskets.value_cat",
+                                "direction": "asc"
+                            }
                         }
                     ]
-                }
+                },
+                "accessInfo": {
+                    "createdAt": "2018-04-05T15:02:27Z"
+                },
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "/rest/projects/kt3hz932v53vabh8/md/indicatorDrills/gatnherp27gjp0pl"
+                    }
+                ]
+            }
             ],
             "page": {
                 "size": 5,
@@ -5953,15 +6045,14 @@ Restricted to *EDITOR* project role that has the permission to update metadata o
                 "title": "Warehouses",
                 "description": "Warehouses owned by the company.",
                 "content": {
-                    "visible": true,
+                    "style": "marker-orange",
                     "filterBy": [
                         {
                             "property": "warehouse.type",
                             "value": "1",
                             "operator": "eq"
                         }
-                    ],
-                    "style": "marker-orange"
+                    ]
                 }
             }
 
@@ -5974,15 +6065,14 @@ Restricted to *EDITOR* project role that has the permission to update metadata o
                 "title": "Warehouses",
                 "description": "Warehouses owned by the company.",
                 "content": {
-                    "visible": true,
+                    "style": "marker-orange",
                     "filterBy": [
                         {
                             "property": "warehouse.type",
                             "value": "1",
                             "operator": "eq"
                         }
-                    ],
-                    "style": "marker-orange"
+                    ]
                 },
                 "accessInfo": {
                     "createdAt": "2017-10-18T12:09:48Z"
@@ -6004,7 +6094,7 @@ Returns Marker with given *id*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + id: `fvnckjtij5v863hb` (string) - Id of the marker
+    + id: `i21ad13kv579qu7j` (string) - Id of the marker
 
 
 + Request
@@ -6017,29 +6107,28 @@ Returns Marker with given *id*.
 + Response 200 (application/json)
 
         {
-            "id": "fvnckjtij5v863hb",
-            "name": "marker_partners",
+            "id": "i21ad13kv579qu7j",
+            "name": "partners_marker",
             "type": "marker",
             "title": "Pick Up Partners",
-            "description": "Shops",
+            "description": "Pick Up Partners",
             "content": {
-                "visible": true,
+                "style": "marker-green",
                 "filterBy": [
                     {
                         "property": "shops.partner",
-                        "value": 1,
+                        "value": "yes",
                         "operator": "eq"
                     }
-                ],
-                "style": "marker-green"
+                ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:43Z"
+                "createdAt": "2018-04-05T15:02:37Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/markers/fvnckjtij5v863hb"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/markers/i21ad13kv579qu7j"
                 }
             ]
         }
@@ -6054,7 +6143,7 @@ Returns Marker with given *name*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + name: `marker_partners` (string) - The marker name
+    + name: `partners_marker` (string) - The marker name
 
 
 + Request
@@ -6067,29 +6156,28 @@ Returns Marker with given *name*.
 + Response 200 (application/json)
 
         {
-            "id": "fvnckjtij5v863hb",
-            "name": "marker_partners",
+            "id": "i21ad13kv579qu7j",
+            "name": "partners_marker",
             "type": "marker",
             "title": "Pick Up Partners",
-            "description": "Shops",
+            "description": "Pick Up Partners",
             "content": {
-                "visible": true,
+                "style": "marker-green",
                 "filterBy": [
                     {
                         "property": "shops.partner",
-                        "value": 1,
+                        "value": "yes",
                         "operator": "eq"
                     }
-                ],
-                "style": "marker-green"
+                ]
             },
             "accessInfo": {
-                "createdAt": "2018-01-25T15:29:43Z"
+                "createdAt": "2018-04-05T15:02:37Z"
             },
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/markers/fvnckjtij5v863hb"
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/markers/i21ad13kv579qu7j"
                 }
             ]
         }
@@ -6128,48 +6216,44 @@ Returns paged collection of all Markers in a project.
             ],
             "content": [
                 {
-                    "id": "fvnckjtij5v863hb",
-                    "name": "marker_partners",
+                    "id": "i21ad13kv579qu7j",
+                    "name": "partners_marker",
                     "type": "marker",
                     "title": "Pick Up Partners",
-                    "description": "Shops",
                     "content": {
-                        "visible": true,
+                        "style": "marker-green",
                         "filterBy": [
                             {
                                 "property": "shops.partner",
-                                "value": 1,
+                                "value": "yes",
                                 "operator": "eq"
                             }
-                        ],
-                        "style": "marker-green"
+                        ]
                     },
                     "accessInfo": {
-                        "createdAt": "2018-01-25T15:29:43Z"
+                        "createdAt": "2018-04-05T15:02:37Z"
                     },
                     "links": [
                         {
                             "rel": "self",
-                            "href": "/rest/projects/vb2b3d8v91jao331/md/markers/fvnckjtij5v863hb"
+                            "href": "/rest/projects/kt3hz932v53vabh8/md/markers/i21ad13kv579qu7j"
                         }
                     ]
                 },
                 {
                     "id": "tso74eoifpeoihch",
-                    "name": "marker_shops",
+                    "name": "shops_marker",
                     "type": "marker",
                     "title": "Stores",
-                    "description": "Stores",
                     "content": {
-                        "visible": true,
+                        "style": "marker-orange",
                         "filterBy": [
                             {
                                 "property": "shops.partner",
                                 "value": 0,
                                 "operator": "eq"
                             }
-                        ],
-                        "style": "marker-orange"
+                        ]
                     },
                     "accessInfo": {
                         "createdAt": "2018-01-25T15:29:44Z"
@@ -6265,21 +6349,17 @@ Restricted to *EDITOR* project role that has the permission to update metadata o
                 "content": {
                     "categories": [
                         {
+                            "dataset": "/rest/projects/$projectId/md/datasets?name=shops",
                             "markers": [
                                 {
-                                    "visible": true,
-                                    "name": "red_marker"
+                                    "name": "shops_marker",
+                                    "visible": true
                                 },
                                 {
-                                    "visible": true,
-                                    "name": "orange_marker"
-                                },
-                                {
-                                    "visible": true,
-                                    "name": "green_marker"
+                                    "name": "partners_marker",
+                                    "visible": true
                                 }
-                            ],
-                            "dataset": "/rest/projects/$projectId/md/datasets?name=shops_dwh"
+                            ]
                         }
                     ]
                 }
@@ -6288,37 +6368,33 @@ Restricted to *EDITOR* project role that has the permission to update metadata o
 + Response 200 (application/json)
 
             {
-                "id": "mgp4vpel6orfeh85",
+                "id": "glrqdativpenfdk5",
                 "name": "shops_marker_selector",
                 "type": "markerSelector",
                 "content": {
                     "categories": [
                         {
+                            "dataset": "/rest/projects/$projectId/md/datasets?name=shops",
                             "markers": [
                                 {
-                                    "visible": true,
-                                    "name": "red_marker"
+                                    "name": "shops_marker",
+                                    "visible": true
                                 },
                                 {
-                                    "visible": true,
-                                    "name": "orange_marker"
-                                },
-                                {
-                                    "visible": true,
-                                    "name": "green_marker"
+                                    "name": "partners_marker",
+                                    "visible": true
                                 }
-                            ],
-                            "dataset": "/rest/projects/$projectId/md/datasets?name=shops_dwh"
+                            ]
                         }
                     ]
                 },
                 "accessInfo": {
-                    "createdAt": "2017-10-18T12:18:03Z"
+                    "createdAt": "2018-04-05T15:02:34Z"
                 },
                 "links": [
                     {
                         "rel": "self",
-                        "href": "/rest/projects/ld3y3gtm7jt6z1fx/md/markerSelectors/mgp4vpel6orfeh85"
+                        "href": "/rest/projects/kt3hz932v53vabh8/md/markerSelectors/glrqdativpenfdk5"
                     }
                 ]
             }
@@ -6333,7 +6409,7 @@ Returns Marker Selector with given *id*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + id: `r05a5hfr1pi3sndp` (string) - Id of the marker
+    + id: `glrqdativpenfdk5` (string) - Id of the marker
 
 
 + Request
@@ -6345,37 +6421,37 @@ Returns Marker Selector with given *id*.
 
 + Response 200 (application/json)
 
-            {
-                "id": "r05a5hfr1pi3sndp",
-                "name": "marker_selector_shops",
-                "type": "markerSelector",
-                "content": {
-                    "categories": [
-                        {
-                            "dataset": "/rest/projects/vb2b3d8v91jao331/md/datasets?name=shops",
-                            "markers": [
-                                {
-                                    "name": "marker_shops",
-                                    "visible": true
-                                },
-                                {
-                                    "name": "marker_partners",
-                                    "visible": true
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "accessInfo": {
-                    "createdAt": "2018-01-25T15:29:44Z"
-                },
-                "links": [
+        {
+            "id": "glrqdativpenfdk5",
+            "name": "shops_marker_selector",
+            "type": "markerSelector",
+            "content": {
+                "categories": [
                     {
-                        "rel": "self",
-                        "href": "/rest/projects/vb2b3d8v91jao331/md/markerSelectors/r05a5hfr1pi3sndp"
+                        "dataset": "/rest/projects/$projectId/md/datasets?name=shops",
+                        "markers": [
+                            {
+                                "name": "shops_marker",
+                                "visible": true
+                            },
+                            {
+                                "name": "partners_marker",
+                                "visible": true
+                            }
+                        ]
                     }
                 ]
-            }
+            },
+            "accessInfo": {
+                "createdAt": "2018-04-05T15:02:34Z"
+            },
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "/rest/projects/kt3hz932v53vabh8/md/markerSelectors/glrqdativpenfdk5"
+                }
+            ]
+        }
 
 ### Get Marker Selector by name [GET /rest/projects/{projectId}/md/markerSelectors{?name}]
 
@@ -6387,7 +6463,7 @@ Returns Marker Selector with given *name*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + name: `marker_selector_shops` (string) - The marker name
+    + name: `shops_marker_selector` (string) - The marker name
 
 
 + Request
@@ -6400,20 +6476,20 @@ Returns Marker Selector with given *name*.
 + Response 200 (application/json)
 
             {
-                "id": "r05a5hfr1pi3sndp",
-                "name": "marker_selector_shops",
+                "id": "glrqdativpenfdk5",
+                "name": "shops_marker_selector",
                 "type": "markerSelector",
                 "content": {
                     "categories": [
                         {
-                            "dataset": "/rest/projects/vb2b3d8v91jao331/md/datasets?name=shops",
+                            "dataset": "/rest/projects/$projectId/md/datasets?name=shops",
                             "markers": [
                                 {
-                                    "name": "marker_shops",
+                                    "name": "shops_marker",
                                     "visible": true
                                 },
                                 {
-                                    "name": "marker_partners",
+                                    "name": "partners_marker",
                                     "visible": true
                                 }
                             ]
@@ -6421,12 +6497,12 @@ Returns Marker Selector with given *name*.
                     ]
                 },
                 "accessInfo": {
-                    "createdAt": "2018-01-25T15:29:44Z"
+                    "createdAt": "2018-04-05T15:02:34Z"
                 },
                 "links": [
                     {
                         "rel": "self",
-                        "href": "/rest/projects/vb2b3d8v91jao331/md/markerSelectors/r05a5hfr1pi3sndp"
+                        "href": "/rest/projects/kt3hz932v53vabh8/md/markerSelectors/glrqdativpenfdk5"
                     }
                 ]
             }
@@ -6465,20 +6541,20 @@ Returns paged collection of all Marker Selectors in a project.
                 ],
                 "content": [
                     {
-                        "id": "r05a5hfr1pi3sndp",
-                        "name": "marker_selector_shops",
+                        "id": "glrqdativpenfdk5",
+                        "name": "shops_marker_selector",
                         "type": "markerSelector",
                         "content": {
                             "categories": [
                                 {
-                                    "dataset": "/rest/projects/vb2b3d8v91jao331/md/datasets?name=shops",
+                                    "dataset": "/rest/projects/$projectId/md/datasets?name=shops",
                                     "markers": [
                                         {
-                                            "name": "marker_shops",
+                                            "name": "shops_marker",
                                             "visible": true
                                         },
                                         {
-                                            "name": "marker_partners",
+                                            "name": "partners_marker",
                                             "visible": true
                                         }
                                     ]
@@ -6486,12 +6562,12 @@ Returns paged collection of all Marker Selectors in a project.
                             ]
                         },
                         "accessInfo": {
-                            "createdAt": "2018-01-25T15:29:44Z"
+                            "createdAt": "2018-04-05T15:02:34Z"
                         },
                         "links": [
                             {
                                 "rel": "self",
-                                "href": "/rest/projects/vb2b3d8v91jao331/md/markerSelectors/r05a5hfr1pi3sndp"
+                                "href": "/rest/projects/kt3hz932v53vabh8/md/markerSelectors/glrqdativpenfdk5"
                             }
                         ]
                     }
@@ -6628,7 +6704,7 @@ Returns Metric with given *id*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + id: `nt95udbdc2c0qv7k` (string) - Id of the export
+    + id: `smiuf2q8cb4hipnc` (string) - Id of the metric
 
 + Request
 
@@ -6640,7 +6716,7 @@ Returns Metric with given *id*.
 + Response 200 (application/json)
 
         {
-            "id": "nt95udbdc2c0qv7k",
+            "id": "smiuf2q8cb4hipnc",
             "name": "potential_customers_metric",
             "type": "metric",
             "content": {
@@ -6658,13 +6734,10 @@ Returns Metric with given *id*.
                                     }
                                 ],
                                 "options": {
-                                    "aggregateBy": [],
                                     "withoutFilters": [
                                         "dim_dates.*",
                                         "baskets.*"
-                                    ],
-                                    "acceptFilters": [],
-                                    "filterBy": []
+                                    ]
                                 }
                             },
                             {
@@ -6690,7 +6763,7 @@ Returns Metric with given *id*.
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/metrics/nt95udbdc2c0qv7k"
+                    "href": "/rest/projects/vb2b3d8v91jao331/md/metrics/smiuf2q8cb4hipnc"
                 }
             ]
         }
@@ -6716,7 +6789,7 @@ Returns Metric with given *name*.
 + Response 200 (application/json)
 
         {
-            "id": "nt95udbdc2c0qv7k",
+            "id": "smiuf2q8cb4hipnc",
             "name": "potential_customers_metric",
             "type": "metric",
             "content": {
@@ -6734,13 +6807,10 @@ Returns Metric with given *name*.
                                     }
                                 ],
                                 "options": {
-                                    "aggregateBy": [],
                                     "withoutFilters": [
                                         "dim_dates.*",
                                         "baskets.*"
-                                    ],
-                                    "acceptFilters": [],
-                                    "filterBy": []
+                                    ]
                                 }
                             },
                             {
@@ -6766,7 +6836,7 @@ Returns Metric with given *name*.
             "links": [
                 {
                     "rel": "self",
-                    "href": "/rest/projects/vb2b3d8v91jao331/md/metrics/nt95udbdc2c0qv7k"
+                    "href": "/rest/projects/vb2b3d8v91jao331/md/metrics/smiuf2q8cb4hipnc"
                 }
             ]
         }
@@ -6906,51 +6976,51 @@ Restricted to *EDITOR* project role that has the permission to update metadata o
     + Body
 
             {
-                "name": "penetration",
+                "name": "catchment_area_view",
                 "type": "view",
-                "title": "Orders",
-                "description": "Detailed orders overview. This view shows regions where the biggest revenue is generated.",
+                "title": "Catchment Area Analysis",
+                "description": "Discover the areas with the biggest or lowest customer base and find out what turnover those customers generate. You can also evaluate the ranking of shops or pick-up partners that are used by customers from different regions.",
                 "content": {
                     "icon": "catchment_area",
-                    "dashboard": "/rest/projects/$projectId/md/dashboards?name=penetration_dashboard",
-                    "markerSelector": "/rest/projects/$projectId/md/markerSelectors?name=marker_selector_warehouse",
+                    "dashboard": "/rest/projects/$projectId/md/dashboards?name=catchment_area_dashboard",
+                    "markerSelector": "/rest/projects/$projectId/md/markerSelectors?name=shops_marker_selector",
+                    "defaultGranularity": "/rest/projects/$projectId/md/datasets?name=district",
                     "filterGroup": [
                         {
                             "type": "globalDate",
-                            "property": "objednavky_dwh.date",
-                            "factDataset": "objednavky_dwh",
+                            "property": "baskets.date_iso",
                             "defaultValues": {
                                 "values": [
-                                    "2016-10-01",
-                                    "2016-12-31"
-                                ]
-                            }
-                        },
-                        {
-                            "type": "date",
-                            "property": "objednavky_dwh.date",
-                            "factDataset": "objednavky_dwh",
-                            "defaultValues": {
-                                "values": [
-                                    "2016-12-11",
-                                    "2016-12-17"
+                                    "2017-09-24",
+                                    "2017-09-30"
                                 ]
                             }
                         },
                         {
                             "type": "histogram",
-                            "property": "objednavky_dwh.price",
+                            "property": "baskets.amount",
                             "format": {
                                 "type": "number",
-                                "fraction": 0
+                                "fraction": 0,
+                                "symbol": "£"
                             }
                         },
                         {
                             "type": "multiSelect",
-                            "property": "objednavky_dwh.day_nazev",
+                            "property": "baskets.on_off_name",
                             "orderBy": [
                                 {
-                                    "property": "objednavky_dwh.day",
+                                    "property": "baskets.on_off_name",
+                                    "direction": "asc"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "multiSelect",
+                            "property": "baskets.courier",
+                            "orderBy": [
+                                {
+                                    "property": "baskets.courier",
                                     "direction": "asc"
                                 }
                             ]
@@ -6972,52 +7042,52 @@ Restricted to *EDITOR* project role that has the permission to update metadata o
 + Response 200 (application/json)
 
             {
-                "id": "pr0i7mi23lk8mspb",
-                "name": "penetration",
+                "id": "o4hdm1tu50h8emea",
+                "name": "catchment_area_view",
                 "type": "view",
-                "title": "Orders",
-                "description": "Detailed orders overview. This view shows regions where the biggest revenue is generated.",
+                "title": "Catchment Area Analysis",
+                "description": "Discover the areas with the biggest or lowest customer base and find out what turnover those customers generate. You can also evaluate the ranking of shops or pick-up partners that are used by customers from different regions.",
                 "content": {
                     "icon": "catchment_area",
-                    "dashboard": "/rest/projects/$projectId/md/dashboards?name=penetration_dashboard",
-                    "markerSelector": "/rest/projects/$projectId/md/markerSelectors?name=marker_selector_warehouse",
+                    "dashboard": "/rest/projects/$projectId/md/dashboards?name=catchment_area_dashboard",
+                    "markerSelector": "/rest/projects/$projectId/md/markerSelectors?name=shops_marker_selector",
+                    "defaultGranularity": "/rest/projects/$projectId/md/datasets?name=district",
                     "filterGroup": [
                         {
                             "type": "globalDate",
-                            "property": "objednavky_dwh.date",
-                            "factDataset": "objednavky_dwh",
+                            "property": "baskets.date_iso",
                             "defaultValues": {
                                 "values": [
-                                    "2016-10-01",
-                                    "2016-12-31"
-                                ]
-                            }
-                        },
-                        {
-                            "type": "date",
-                            "property": "objednavky_dwh.date",
-                            "factDataset": "objednavky_dwh",
-                            "defaultValues": {
-                                "values": [
-                                    "2016-12-11",
-                                    "2016-12-17"
+                                    "2017-09-24",
+                                    "2017-09-30"
                                 ]
                             }
                         },
                         {
                             "type": "histogram",
-                            "property": "objednavky_dwh.price",
+                            "property": "baskets.amount",
                             "format": {
                                 "type": "number",
-                                "fraction": 0
+                                "fraction": 0,
+                                "symbol": "£"
                             }
                         },
                         {
                             "type": "multiSelect",
-                            "property": "objednavky_dwh.day_nazev",
+                            "property": "baskets.on_off_name",
                             "orderBy": [
                                 {
-                                    "property": "objednavky_dwh.day",
+                                    "property": "baskets.on_off_name",
+                                    "direction": "asc"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "multiSelect",
+                            "property": "baskets.courier",
+                            "orderBy": [
+                                {
+                                    "property": "baskets.courier",
                                     "direction": "asc"
                                 }
                             ]
@@ -7035,12 +7105,12 @@ Restricted to *EDITOR* project role that has the permission to update metadata o
                     }
                 },
                 "accessInfo": {
-                    "createdAt": "2017-10-18T12:31:34Z"
+                    "createdAt": "2018-04-05T15:02:35Z"
                 },
                 "links": [
                     {
                         "rel": "self",
-                        "href": "/rest/projects/ld3y3gtm7jt6z1fx/md/views/pr0i7mi23lk8mspb"
+                        "href": "/rest/projects/kt3hz932v53vabh8/md/views/o4hdm1tu50h8emea"
                     }
                 ]
             }
@@ -7054,7 +7124,7 @@ Returns View with given *id*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + id: `uiir7hakk0cbgkbs` (string) - Id of the view
+    + id: `o4hdm1tu50h8emea` (string) - Id of the view
 
 
 + Request
@@ -7067,20 +7137,20 @@ Returns View with given *id*.
 + Response 200 (application/json)
 
             {
-                "id": "uiir7hakk0cbgkbs",
-                "name": "catchment_area",
+                "id": "o4hdm1tu50h8emea",
+                "name": "catchment_area_view",
                 "type": "view",
                 "title": "Catchment Area Analysis",
-                "description": "Discover the areas with the biggest or lowest customer base and find out ...",
+                "description": "Discover the areas with the biggest or lowest customer base and find out what turnover those customers generate. You can also evaluate the ranking of shops or pick-up partners that are used by customers from different regions.",
                 "content": {
                     "icon": "catchment_area",
-                    "dashboard": "/rest/projects/vb2b3d8v91jao331/md/dashboards?name=catchment_area_dashboard",
-                    "markerSelector": "/rest/projects/vb2b3d8v91jao331/md/markerSelectors?name=marker_selector_shops",
+                    "dashboard": "/rest/projects/$projectId/md/dashboards?name=catchment_area_dashboard",
+                    "markerSelector": "/rest/projects/$projectId/md/markerSelectors?name=shops_marker_selector",
+                    "defaultGranularity": "/rest/projects/$projectId/md/datasets?name=district",
                     "filterGroup": [
                         {
                             "type": "globalDate",
-                            "property": "dim_dates.date_iso",
-                            "factDataset": "baskets",
+                            "property": "baskets.date_iso",
                             "defaultValues": {
                                 "values": [
                                     "2017-09-24",
@@ -7130,12 +7200,12 @@ Returns View with given *id*.
                     }
                 },
                 "accessInfo": {
-                    "createdAt": "2018-01-25T15:29:50Z"
+                    "createdAt": "2018-04-05T15:02:35Z"
                 },
                 "links": [
                     {
                         "rel": "self",
-                        "href": "/rest/projects/vb2b3d8v91jao331/md/views/uiir7hakk0cbgkbs"
+                        "href": "/rest/projects/kt3hz932v53vabh8/md/views/o4hdm1tu50h8emea"
                     }
                 ]
             }
@@ -7149,7 +7219,7 @@ Returns View with given *name*.
 
 + Parameters
     + projectId: `vb2b3d8v91jao331` (string) - The ID of an actual project
-    + name: `catchment_area` (string) - Name of the view
+    + name: `catchment_area_view` (string) - Name of the view
 
 + Request
 
@@ -7161,20 +7231,20 @@ Returns View with given *name*.
 + Response 200 (application/json)
 
             {
-                "id": "uiir7hakk0cbgkbs",
-                "name": "catchment_area",
+                "id": "o4hdm1tu50h8emea",
+                "name": "catchment_area_view",
                 "type": "view",
                 "title": "Catchment Area Analysis",
-                "description": "Discover the areas with the biggest or lowest customer base and find out ...",
+                "description": "Discover the areas with the biggest or lowest customer base and find out what turnover those customers generate. You can also evaluate the ranking of shops or pick-up partners that are used by customers from different regions.",
                 "content": {
                     "icon": "catchment_area",
-                    "dashboard": "/rest/projects/vb2b3d8v91jao331/md/dashboards?name=catchment_area_dashboard",
-                    "markerSelector": "/rest/projects/vb2b3d8v91jao331/md/markerSelectors?name=marker_selector_shops",
+                    "dashboard": "/rest/projects/$projectId/md/dashboards?name=catchment_area_dashboard",
+                    "markerSelector": "/rest/projects/$projectId/md/markerSelectors?name=shops_marker_selector",
+                    "defaultGranularity": "/rest/projects/$projectId/md/datasets?name=district",
                     "filterGroup": [
                         {
                             "type": "globalDate",
-                            "property": "dim_dates.date_iso",
-                            "factDataset": "baskets",
+                            "property": "baskets.date_iso",
                             "defaultValues": {
                                 "values": [
                                     "2017-09-24",
@@ -7224,12 +7294,12 @@ Returns View with given *name*.
                     }
                 },
                 "accessInfo": {
-                    "createdAt": "2018-01-25T15:29:50Z"
+                    "createdAt": "2018-04-05T15:02:35Z"
                 },
                 "links": [
                     {
                         "rel": "self",
-                        "href": "/rest/projects/vb2b3d8v91jao331/md/views/uiir7hakk0cbgkbs"
+                        "href": "/rest/projects/kt3hz932v53vabh8/md/views/o4hdm1tu50h8emea"
                     }
                 ]
             }
@@ -7266,19 +7336,55 @@ Returns paged collection of all Views in a project.
                 ],
                 "content": [
                     {
-                        "id": "uiir7hakk0cbgkbs",
-                        "name": "catchment_area",
+                        "id": "o4hdm1tu50h8emea",
+                        "name": "catchment_area_view",
                         "type": "view",
                         "title": "Catchment Area Analysis",
-                        "description": "Discover the areas with the biggest or lowest customer base and find out ...",
+                        "description": "Discover the areas with the biggest or lowest customer base and find out what turnover those customers generate. You can also evaluate the ranking of shops or pick-up partners that are used by customers from different regions.",
                         "content": {
                             "icon": "catchment_area",
-                            "dashboard": "/rest/projects/vb2b3d8v91jao331/md/dashboards?name=catchment_area_dashboard",
-                            "markerSelector": "/rest/projects/vb2b3d8v91jao331/md/markerSelectors?name=marker_selector_shops",
+                            "dashboard": "/rest/projects/$projectId/md/dashboards?name=catchment_area_dashboard",
+                            "markerSelector": "/rest/projects/$projectId/md/markerSelectors?name=shops_marker_selector",
+                            "defaultGranularity": "/rest/projects/$projectId/md/datasets?name=district",
                             "filterGroup": [
                                 {
+                                    "type": "globalDate",
+                                    "property": "baskets.date_iso",
+                                    "defaultValues": {
+                                        "values": [
+                                            "2017-09-24",
+                                            "2017-09-30"
+                                        ]
+                                    }
+                                },
+                                {
                                     "type": "histogram",
-                                    "property": "baskets.amount"
+                                    "property": "baskets.amount",
+                                    "format": {
+                                        "type": "number",
+                                        "fraction": 0,
+                                        "symbol": "£"
+                                    }
+                                },
+                                {
+                                    "type": "multiSelect",
+                                    "property": "baskets.on_off_name",
+                                    "orderBy": [
+                                        {
+                                            "property": "baskets.on_off_name",
+                                            "direction": "asc"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "multiSelect",
+                                    "property": "baskets.courier",
+                                    "orderBy": [
+                                        {
+                                            "property": "baskets.courier",
+                                            "direction": "asc"
+                                        }
+                                    ]
                                 }
                             ],
                             "mapOptions": {
@@ -7293,12 +7399,12 @@ Returns paged collection of all Views in a project.
                             }
                         },
                         "accessInfo": {
-                            "createdAt": "2018-01-25T15:29:50Z"
+                            "createdAt": "2018-04-05T15:02:35Z"
                         },
                         "links": [
                             {
                                 "rel": "self",
-                                "href": "/rest/projects/vb2b3d8v91jao331/md/views/uiir7hakk0cbgkbs"
+                                "href": "/rest/projects/kt3hz932v53vabh8/md/views/o4hdm1tu50h8emea"
                             }
                         ]
                     }
